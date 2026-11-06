@@ -1,0 +1,6 @@
+id,timestamp,level,message
+1,06.11.2026 10:00:00,INFO,start
+2,06.11.2026 10:01:00,WARN,slow disk
+3,06.11.2026 10:02:00,ERROR,read failed
+4,06.11.2026 10:03:00,INFO,retry
+5,06.11.2026 10:04:00,ERROR,timeout
