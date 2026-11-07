@@ -13,11 +13,22 @@ struct Record {
     QString message;
 };
 
+bool parseCsvLine(QString line, Record& record)
+{
+    QStringList parts = line.split(',', Qt::KeepEmptyParts);
+    if (parts.size() == 4) {
+        record = Record{parts[0], parts[1], parts[2], parts[3]};
+        return true;
+    }
+    return false;
+}
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QFile file("../../data/sample.csv");
+    QFile file("../../data/sample_bad.csv");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Cannot open file";
         return 1;
@@ -27,6 +38,7 @@ int main(int argc, char *argv[])
     int lineNumber = 0;
 
     std::vector<Record> records;
+    Record record;
     int totalLines = 0;
     int emptyLines = 0;
     int badLines = 0;
@@ -47,29 +59,25 @@ int main(int argc, char *argv[])
 
         if (cleanLine.isEmpty()) {
             ++emptyLines;
+        }
+        //
+        if (!parseCsvLine(cleanLine, record)) {
+            ++badLines;
+            qDebug() << "bad line:" << lineNumber << "text:" << cleanLine;
             continue;
         }
 
-        QStringList parts = cleanLine.split(',', Qt::KeepEmptyParts);
-
-        if (parts.size() == 4) {
-            Record record{parts[0], parts[1], parts[2], parts[3]};
-            records.push_back(record);
-
-            if (record.level == "INFO") {
-                ++countInfo;
-            } else if (record.level == "WARN") {
-                ++countWarn;
-            } else if (record.level == "ERROR") {
-                ++countError;
-            }
+        if (record.level == "INFO") {
+            ++countInfo;
+        } else if (record.level == "WARN") {
+            ++countWarn;
+        } else if (record.level == "ERROR") {
+            ++countError;
         } else {
             ++badLines;
-
-            qDebug() << "bad line:" << lineNumber
-                     << "parts size:" << parts.size()
-                     << "text:" << cleanLine;
+            continue;
         }
+        records.push_back(record);
     }
 
     file.close();
