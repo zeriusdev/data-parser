@@ -11,6 +11,8 @@ qt_add_executable(data-parser
     src/mainwindow.cpp
     src/mainwindow.h
     src/mainwindow.ui
+    src/parser.h
+    src/parser.cpp
 )
 
 target_link_libraries(data-parser
