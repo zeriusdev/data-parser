@@ -32,3 +32,27 @@ bool parseCsvLine(const QString& line, Record& record)
     record = Record{id, timestamp, level, message};
     return true;
 }
+
+
+void accumulateStats(const QString &line, bool parseOk, const Record &record, Stats &stats)
+{
+    ++stats.total;
+    if (line.trimmed().isEmpty()) {
+        ++stats.empty;
+        return;
+    }
+    if (!parseOk) {
+        ++stats.bad;
+        return;
+    }
+    ++stats.records;
+    if (record.level == "INFO") {
+        ++stats.info;
+    }
+    if (record.level == "WARN") {
+        ++stats.warn;
+    }
+    if (record.level == "ERROR") {
+        ++stats.error;
+    }
+}

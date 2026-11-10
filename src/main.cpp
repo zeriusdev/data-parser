@@ -4,7 +4,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include <vector>
 #include "parser.h"
 
 int main(int argc, char *argv[])
@@ -20,18 +19,11 @@ int main(int argc, char *argv[])
     QTextStream stream(&file);
     int lineNumber = 0;
 
-    std::vector<Record> records;
+    Stats stats;
     Record record;
-    int totalLines = 0;
-    int emptyLines = 0;
-    int badLines = 0;
-    int countInfo = 0;
-    int countWarn = 0;
-    int countError = 0;
 
     while (!stream.atEnd()) {
         ++lineNumber;
-        ++totalLines;
 
         QString line = stream.readLine();
         QString cleanLine = line.trimmed();
@@ -40,39 +32,23 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        if (cleanLine.isEmpty()) {
-            ++emptyLines;
-            continue;
-        }
+        bool isOk = parseCsvLine(cleanLine, record);
+        accumulateStats(cleanLine, isOk, record, stats);
 
-        if (!parseCsvLine(cleanLine, record)) {
-            ++badLines;
+        if (!isOk) {
             qDebug() << "bad line:" << lineNumber << "text:" << cleanLine;
-            continue;
         }
-
-        if (record.level == "INFO") {
-            ++countInfo;
-        } else if (record.level == "WARN") {
-            ++countWarn;
-        } else if (record.level == "ERROR") {
-            ++countError;
-        } else {
-            ++badLines;
-            continue;
-        }
-        records.push_back(record);
     }
 
     file.close();
 
-    qDebug() << "records:" << records.size();
-    qDebug() << "totalLines:" << totalLines;
-    qDebug() << "emptyLines:" << emptyLines;
-    qDebug() << "badLines:" << badLines;
-    qDebug() << "INFO:" << countInfo;
-    qDebug() << "WARN:" << countWarn;
-    qDebug() << "ERROR:" << countError;
+    qDebug() << "records:" << stats.records;
+    qDebug() << "totalLines:" << stats.total;
+    qDebug() << "emptyLines:" << stats.empty;
+    qDebug() << "badLines:" << stats.bad;
+    qDebug() << "INFO:" << stats.info;
+    qDebug() << "WARN:" << stats.warn;
+    qDebug() << "ERROR:" << stats.error;
 
     // MainWindow w;
     // w.show();
