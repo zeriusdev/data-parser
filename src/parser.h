@@ -2,6 +2,7 @@
 #define PARSER_H
 
 #include <QString>
+#include <QFile>
 
 struct Record {
     QString id;
@@ -22,5 +23,6 @@ struct Stats {
 
 bool parseCsvLine(const QString& line, Record& record);
 void accumulateStats(const QString& line, bool parseOk, const Record& record, Stats& stats);
+void processFile(QFile& file, Stats& stats);
 
 #endif // PARSER_H

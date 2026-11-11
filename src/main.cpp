@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-#include <QFile>
-#include <QTextStream>
-#include <QDebug>
 #include "parser.h"
 
 int main(int argc, char *argv[])
@@ -16,29 +13,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    QTextStream stream(&file);
-    int lineNumber = 0;
-
     Stats stats;
-    Record record;
 
-    while (!stream.atEnd()) {
-        ++lineNumber;
-
-        QString line = stream.readLine();
-        QString cleanLine = line.trimmed();
-
-        if (lineNumber == 1) {
-            continue;
-        }
-
-        bool isOk = parseCsvLine(cleanLine, record);
-        accumulateStats(cleanLine, isOk, record, stats);
-
-        if (!isOk) {
-            qDebug() << "bad line:" << lineNumber << "text:" << cleanLine;
-        }
-    }
+    processFile(file, stats);
 
     file.close();
 

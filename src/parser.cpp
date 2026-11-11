@@ -1,5 +1,7 @@
 #include "parser.h"
 #include <QStringList>
+#include <QTextStream>
+#include <QDebug>
 
 bool parseCsvLine(const QString& line, Record& record)
 {
@@ -54,5 +56,29 @@ void accumulateStats(const QString &line, bool parseOk, const Record &record, St
     }
     if (record.level == "ERROR") {
         ++stats.error;
+    }
+}
+
+void processFile(QFile &file, Stats &stats)
+{
+    QTextStream in(&file);
+    Record record;
+    int lineNumber = 0;
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QString cleanLine = line.trimmed();
+        ++lineNumber;
+
+        if (lineNumber == 1) {
+            continue;
+        }
+
+        bool isOk = parseCsvLine(cleanLine, record);
+        accumulateStats(cleanLine, isOk, record, stats);
+
+        if (!isOk) {
+            qDebug() << "bad line:" << lineNumber << "text:" << cleanLine;
+        }
     }
 }
