@@ -62,6 +62,8 @@ void accumulateStats(const QString &line, bool parseOk, const Record &record, St
 void processFile(QFile &file, Stats &stats)
 {
     QTextStream in(&file);
+    in.readLine();  // skip header line
+
     Record record;
     int lineNumber = 0;
 
@@ -69,10 +71,6 @@ void processFile(QFile &file, Stats &stats)
         QString line = in.readLine();
         QString cleanLine = line.trimmed();
         ++lineNumber;
-
-        if (lineNumber == 1) {
-            continue;
-        }
 
         bool isOk = parseCsvLine(cleanLine, record);
         accumulateStats(cleanLine, isOk, record, stats);
