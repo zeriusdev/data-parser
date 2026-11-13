@@ -59,13 +59,19 @@ void accumulateStats(const QString &line, bool parseOk, const Record &record, St
     }
 }
 
-void processFile(QFile &file, Stats &stats)
+void processFile(const QString &filePath, Stats &stats)
 {
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Cannot open file";
+        return;
+    }
+
     QTextStream in(&file);
     in.readLine();  // skip header line
+    int lineNumber = 1;
 
     Record record;
-    int lineNumber = 0;
 
     while (!in.atEnd()) {
         QString line = in.readLine();
@@ -79,4 +85,5 @@ void processFile(QFile &file, Stats &stats)
             qDebug() << "bad line:" << lineNumber << "text:" << cleanLine;
         }
     }
+    file.close();
 }

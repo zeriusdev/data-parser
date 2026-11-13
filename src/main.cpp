@@ -7,17 +7,11 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QFile file("../../data/sample.csv");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "Cannot open file";
-        return 1;
-    }
+
 
     Stats stats;
-
-    processFile(file, stats);
-
-    file.close();
+    QString path = "missing.csv";
+    processFile(path, stats);
 
     qDebug() << "records:" << stats.records;
     qDebug() << "totalLines:" << stats.total;
