@@ -7,10 +7,14 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
+    QStringList args = a.arguments();
+    if (args.size() != 2) {
+        qWarning() << "Usage:" << args[0] << "../../data/sample.csv";
+        return 1;
+    }
 
     Stats stats;
-    QString path = "missing.csv";
+    QString path = args[1];
     processFile(path, stats);
 
     qDebug() << "records:" << stats.records;

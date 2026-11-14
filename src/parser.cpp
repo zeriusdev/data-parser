@@ -36,7 +36,7 @@ bool parseCsvLine(const QString& line, Record& record)
 }
 
 
-void accumulateStats(const QString &line, bool parseOk, const Record &record, Stats &stats)
+void accumulateStats(const QString& line, bool parseOk, const Record& record, Stats& stats)
 {
     ++stats.total;
     if (line.trimmed().isEmpty()) {
@@ -59,7 +59,7 @@ void accumulateStats(const QString &line, bool parseOk, const Record &record, St
     }
 }
 
-void processFile(const QString &filePath, Stats &stats)
+void processFile(const QString& filePath, Stats &stats)
 {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {

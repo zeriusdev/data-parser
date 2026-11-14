@@ -23,6 +23,6 @@ struct Stats {
 
 bool parseCsvLine(const QString& line, Record& record);
 void accumulateStats(const QString& line, bool parseOk, const Record& record, Stats& stats);
-void processFile(const QString &filePath, Stats& stats);
+void processFile(const QString& filePath, Stats& stats);
 
 #endif // PARSER_H
